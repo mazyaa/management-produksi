@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply font-sans antialiased bg-slate-50 text-slate-800;
+    }
+}
+
+@layer components {
+    .btn-primary {
+        @apply inline-flex items-center justify-center px-4 py-2.5 bg-primary-600 text-white text-sm font-semibold rounded-xl hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed;
+    }
+    .btn-secondary {
+        @apply inline-flex items-center justify-center px-4 py-2.5 bg-white text-slate-700 text-sm font-semibold rounded-xl border border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed;
+    }
+    .btn-danger {
+        @apply inline-flex items-center justify-center px-4 py-2.5 bg-red-600 text-white text-sm font-semibold rounded-xl hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed;
+    }
+    .btn-success {
+        @apply inline-flex items-center justify-center px-4 py-2.5 bg-emerald-600 text-white text-sm font-semibold rounded-xl hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed;
+    }
+    .btn-warning {
+        @apply inline-flex items-center justify-center px-4 py-2.5 bg-amber-500 text-white text-sm font-semibold rounded-xl hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed;
+    }
+    .btn-sm {
+        @apply px-3 py-1.5 text-xs rounded-lg;
+    }
+    .btn-lg {
+        @apply px-6 py-3 text-base;
+    }
+    .card {
+        @apply bg-white rounded-2xl shadow-sm border border-slate-200/60 overflow-hidden;
+    }
+    .card-body {
+        @apply p-6;
+    }
+    .form-input-custom {
+        @apply w-full rounded-xl border-slate-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-sm transition-colors duration-200 disabled:bg-slate-100 disabled:text-slate-500;
+    }
+    .form-label {
+        @apply block text-sm font-medium text-slate-700 mb-1.5;
+    }
+    .table-container {
+        @apply bg-white rounded-2xl shadow-sm border border-slate-200/60 overflow-hidden;
+    }
+}
