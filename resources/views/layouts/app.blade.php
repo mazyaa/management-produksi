@@ -7,16 +7,18 @@
 
         <title>@yield('title') - {{ config('app.name', 'PT Mitsuba Indonesia') }}</title>
 
+        <link rel="icon" href="{{ asset('img/logomitsuba.svg') }}" type="image/svg+xml">
+
         <!-- Fonts & Icons -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        
+
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
         <!-- SweetAlert2 CDN -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        
+
         <!-- Chart.js CDN -->
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -25,10 +27,10 @@
     <body class="font-sans antialiased bg-slate-50 text-slate-800" x-data="{ sidebarOpen: false, sidebarCollapsed: false }">
         <div class="min-h-screen flex">
             <!-- Sidebar Navigation -->
-            <aside 
-                class="fixed inset-y-0 left-0 z-25 flex flex-col bg-slate-900 text-slate-400 border-r border-slate-800 transition-all duration-300 transform md:translate-x-0 md:static shrink-0"
-                :class="{ 
-                    'translate-x-0': sidebarOpen, 
+            <aside
+                class="fixed inset-y-0 left-0 z-40 flex flex-col bg-slate-900 text-slate-400 border-r border-slate-800 transition-all duration-300 transform md:translate-x-0 md:static shrink-0"
+                :class="{
+                    'translate-x-0': sidebarOpen,
                     '-translate-x-full': !sidebarOpen,
                     'w-[280px]': !sidebarCollapsed,
                     'w-[80px]': sidebarCollapsed
@@ -37,9 +39,7 @@
                 <!-- Brand logo area -->
                 <div class="h-16 flex items-center px-6 border-b border-slate-800 overflow-hidden bg-slate-950/40">
                     <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-primary-600 to-indigo-500 text-white font-extrabold flex items-center justify-center text-sm shadow-md shadow-primary-500/10">
-                            MI
-                        </div>
+                        <img src="{{ asset('img/logomitsuba.svg') }}" alt="Logo Mitsuba" class="w-9 h-9 object-contain" />
                         <div class="transition-all duration-300 whitespace-nowrap" x-show="!sidebarCollapsed">
                             <span class="text-white font-bold text-base tracking-tight">PT Mitsuba</span>
                             <span class="block text-[10px] font-semibold text-primary-500 uppercase tracking-wider">Press-3 Dept</span>
@@ -52,7 +52,7 @@
                     <!-- Dashboard link -->
                     <div class="space-y-1.5">
                         @if(auth()->user()->hasRole('admin', 'operator', 'leader', 'assistant_manager'))
-                            <a href="{{ route('dashboard') }}" 
+                            <a href="{{ route('dashboard') }}"
                                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ request()->routeIs('dashboard') ? 'bg-primary-600 text-white shadow-md shadow-primary-500/20' : 'hover:bg-slate-800 hover:text-white' }}"
                                title="Dashboard"
                             >
@@ -69,7 +69,7 @@
                         <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 mb-2" x-show="!sidebarCollapsed">
                             Produksi
                         </div>
-                        <a href="{{ route('produksis.index') }}" 
+                        <a href="{{ route('produksis.index') }}"
                            class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ request()->routeIs('produksis.*') ? 'bg-primary-600 text-white shadow-md shadow-primary-500/20' : 'hover:bg-slate-800 hover:text-white' }}"
                            title="Produksi Harian"
                         >
@@ -80,7 +80,7 @@
                         </a>
 
                         @if(auth()->user()->hasRole('admin', 'leader', 'assistant_manager'))
-                            <a href="{{ route('laporans.index') }}" 
+                            <a href="{{ route('laporans.index') }}"
                                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ request()->routeIs('laporans.*') ? 'bg-primary-600 text-white shadow-md shadow-primary-500/20' : 'hover:bg-slate-800 hover:text-white' }}"
                                title="Laporan Produksi"
                             >
@@ -98,7 +98,7 @@
                             <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 mb-2" x-show="!sidebarCollapsed">
                                 Master Data
                             </div>
-                            <a href="{{ route('master.shifts.index') }}" 
+                            <a href="{{ route('master.shifts.index') }}"
                                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ request()->routeIs('master.shifts.*') ? 'bg-primary-600 text-white shadow-md shadow-primary-500/20' : 'hover:bg-slate-800 hover:text-white' }}"
                                title="Data Shift"
                             >
@@ -107,7 +107,7 @@
                                 </svg>
                                 <span class="whitespace-nowrap" x-show="!sidebarCollapsed">Data Shift</span>
                             </a>
-                            <a href="{{ route('master.mesins.index') }}" 
+                            <a href="{{ route('master.mesins.index') }}"
                                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ request()->routeIs('master.mesins.*') ? 'bg-primary-600 text-white shadow-md shadow-primary-500/20' : 'hover:bg-slate-800 hover:text-white' }}"
                                title="Data Mesin"
                             >
@@ -117,7 +117,7 @@
                                 </svg>
                                 <span class="whitespace-nowrap" x-show="!sidebarCollapsed">Data Mesin</span>
                             </a>
-                            <a href="{{ route('master.parts.index') }}" 
+                            <a href="{{ route('master.parts.index') }}"
                                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ request()->routeIs('master.parts.*') ? 'bg-primary-600 text-white shadow-md shadow-primary-500/20' : 'hover:bg-slate-800 hover:text-white' }}"
                                title="Data Part"
                             >
@@ -126,7 +126,7 @@
                                 </svg>
                                 <span class="whitespace-nowrap" x-show="!sidebarCollapsed">Data Part</span>
                             </a>
-                            <a href="{{ route('master.kategori-ngs.index') }}" 
+                            <a href="{{ route('master.kategori-ngs.index') }}"
                                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ request()->routeIs('master.kategori-ngs.*') ? 'bg-primary-600 text-white shadow-md shadow-primary-500/20' : 'hover:bg-slate-800 hover:text-white' }}"
                                title="Kategori NG"
                             >
@@ -141,7 +141,7 @@
                             <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 mb-2" x-show="!sidebarCollapsed">
                                 Keamanan
                             </div>
-                            <a href="{{ route('users.index') }}" 
+                            <a href="{{ route('users.index') }}"
                                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ request()->routeIs('users.*') ? 'bg-primary-600 text-white shadow-md shadow-primary-500/20' : 'hover:bg-slate-800 hover:text-white' }}"
                                title="Kelola User"
                             >
@@ -156,8 +156,8 @@
 
                 <!-- Sidebar footer & Collapse trigger -->
                 <div class="p-4 border-t border-slate-800 bg-slate-950/20 flex items-center justify-between overflow-hidden">
-                    <button 
-                        @click="sidebarCollapsed = !sidebarCollapsed" 
+                    <button
+                        @click="sidebarCollapsed = !sidebarCollapsed"
                         class="hidden md:inline-flex items-center justify-center w-9 h-9 rounded-xl border border-slate-850 hover:bg-slate-800 text-slate-400 hover:text-white transition-colors duration-200"
                         title="Collapse Sidebar"
                     >
@@ -165,17 +165,13 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
                         </svg>
                     </button>
-                    
-                    <span class="text-[10px] font-bold text-slate-600 tracking-wider whitespace-nowrap" x-show="!sidebarCollapsed">
-                        v1.0.0
-                    </span>
                 </div>
             </aside>
 
             <!-- Mobile Sidebar Overlay Backdrop -->
-            <div 
-                x-show="sidebarOpen" 
-                @click="sidebarOpen = false" 
+            <div
+                x-show="sidebarOpen"
+                @click="sidebarOpen = false"
                 class="fixed inset-0 bg-slate-950/50 backdrop-blur-sm z-20 md:hidden"
                 style="display: none;"
             ></div>
@@ -186,15 +182,15 @@
                 <header class="h-16 bg-white border-b border-slate-200/60 px-6 flex items-center justify-between sticky top-0 z-10 shadow-sm/5 bg-opacity-90 backdrop-blur-md">
                     <!-- Left top bar -->
                     <div class="flex items-center gap-4">
-                        <button 
-                            @click="sidebarOpen = !sidebarOpen" 
+                        <button
+                            @click="sidebarOpen = !sidebarOpen"
                             class="inline-flex items-center justify-center p-2 rounded-xl text-slate-500 hover:bg-slate-50 border border-slate-200 md:hidden"
                         >
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                             </svg>
                         </button>
-                        
+
                         <div class="hidden sm:block">
                             <h2 class="text-sm font-semibold text-slate-700 tracking-tight">@yield('page-title', 'Sistem Informasi Produksi')</h2>
                         </div>
@@ -212,14 +208,23 @@
                             </div>
 
                             <!-- User Profile initials circle -->
-                            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-primary-100 to-indigo-50 text-primary-700 font-bold border border-primary-200/50 flex items-center justify-center text-sm shadow-sm">
-                                {{ strtoupper(substr(auth()->user()->nama, 0, 2)) }}
+                            @php
+                                $roleIcon = match(auth()->user()->role->value) {
+                                    'admin' => 'admin.png',
+                                    'assistant_manager' => 'asmen.png',
+                                    'leader' => 'leader.png',
+                                    'operator' => 'operator.png',
+                                    default => 'operator.png'
+                                };
+                            @endphp
+                            <div class="w-10 h-10 rounded-2xl bg-slate-100 flex items-center justify-center overflow-hidden shadow-sm border border-slate-200">
+                                <img src="{{ asset('img/' . $roleIcon) }}" alt="Profile" class="w-full h-full object-cover">
                             </div>
 
                             <!-- Logout form -->
                             <form method="POST" action="{{ route('logout') }}" class="ml-2">
                                 @csrf
-                                <button type="submit" 
+                                <button type="submit"
                                     class="inline-flex items-center justify-center w-10 h-10 rounded-2xl border border-slate-200 hover:bg-red-50 text-slate-400 hover:text-red-600 transition-colors duration-200 shadow-sm"
                                     title="Keluar Aplikasi"
                                 >
@@ -236,6 +241,13 @@
                 <main class="flex-1 p-6 md:p-8 max-w-7xl w-full mx-auto overflow-y-auto">
                     {{ $slot }}
                 </main>
+
+                <footer class="border-t border-slate-200/60 bg-white/70 backdrop-blur-md">
+                    <div class="max-w-7xl mx-auto px-6 md:px-8 py-4 text-xs text-slate-500 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                        <div class="font-semibold text-slate-600">PT Mitsuba Indonesia Press-3 Department</div>
+                        <div>Copyright © {{ date('Y') }}. All rights reserved.</div>
+                    </div>
+                </footer>
             </div>
         </div>
 

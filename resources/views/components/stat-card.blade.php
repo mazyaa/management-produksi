@@ -19,8 +19,8 @@
             'bgIcon' => 'bg-red-50 text-red-600 border-red-100',
         ],
         'warning' => [
-            'border' => 'border-l-amber-500',
-            'bgIcon' => 'bg-amber-50 text-amber-600 border-amber-100',
+            'border' => 'border-l-secondary-500',
+            'bgIcon' => 'bg-secondary-50 text-secondary-600 border-secondary-100',
         ],
         default => [
             'border' => 'border-l-primary-500',

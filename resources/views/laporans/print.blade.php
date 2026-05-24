@@ -19,7 +19,7 @@
         .summary-card { flex: 1; padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 4px; border-left: 3px solid #4f46e5; }
         .summary-card.green { border-left-color: #10b981; }
         .summary-card.red { border-left-color: #ef4444; }
-        .summary-card.amber { border-left-color: #f59e0b; }
+        .summary-card.amber { border-left-color: #f97316; }
         .summary-card .s-label { font-size: 9px; font-weight: 700; text-transform: uppercase; color: #94a3b8; }
         .summary-card .s-value { font-size: 16px; font-weight: 800; color: #1e293b; margin-top: 2px; }
         .summary-card .s-sub { font-size: 9px; color: #64748b; font-weight: 600; }
@@ -43,7 +43,7 @@
         .print-info { font-size: 9px; color: #94a3b8; text-align: center; margin-top: 12px; }
         @media print {
             body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .no-print { display: none; }
+            .no-print { display: none !important; }
         }
     </style>
 </head>
@@ -51,10 +51,10 @@
     <!-- Print Button (hidden on print) -->
     <div class="no-print" style="padding: 12px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; display: flex; gap: 8px; align-items: center;">
         <button onclick="window.print()" style="padding: 8px 16px; background: #4f46e5; color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;">
-            🖨️ Cetak
+            Cetak
         </button>
         <button onclick="window.close()" style="padding: 8px 16px; background: #64748b; color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;">
-            ✕ Tutup
+            Tutup
         </button>
     </div>
 
@@ -74,7 +74,7 @@
             </div>
             <div class="meta-item">
                 <div class="label">Total Records</div>
-                <div class="value">{{ $produksis->count() }} data</div>
+                <div class="value">{{ $allRecords->count() }} data</div>
             </div>
             <div class="meta-item">
                 <div class="label">Dicetak Oleh</div>
@@ -128,7 +128,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($produksis as $i => $produksi)
+                @foreach($allRecords as $i => $produksi)
                     <tr>
                         <td>{{ $i + 1 }}</td>
                         <td>{{ $produksi->tanggal_produksi->format('d/m/Y') }}</td>

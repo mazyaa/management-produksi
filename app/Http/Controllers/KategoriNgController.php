@@ -29,7 +29,8 @@ class KategoriNgController extends Controller
             $query->where('severity', $request->severity);
         }
 
-        $kategoriNgs = $query->orderBy('kode_ng')->paginate(10)->withQueryString();
+        $limit = $request->get('limit', 10);
+        $kategoriNgs = $query->orderBy('kode_ng')->paginate($limit)->withQueryString();
         $severities = Severity::cases();
 
         return view('kategori-ngs.index', compact('kategoriNgs', 'severities'));

@@ -14,10 +14,10 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-gray-900 antialiased min-h-screen bg-gradient-to-tr from-slate-900 via-indigo-950 to-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
+    <body class="font-sans text-gray-900 antialiased min-h-screen bg-gradient-to-tr from-slate-900 via-primary-950 to-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
         <!-- Background decorative elements -->
         <div class="absolute w-[500px] h-[500px] rounded-full bg-primary-600/10 blur-[80px] -top-40 -left-40"></div>
-        <div class="absolute w-[400px] h-[400px] rounded-full bg-indigo-500/10 blur-[100px] -bottom-20 -right-20"></div>
+        <div class="absolute w-[400px] h-[400px] rounded-full bg-secondary-500/10 blur-[100px] -bottom-20 -right-20"></div>
 
         <div class="w-full max-w-md z-10">
             {{ $slot }}

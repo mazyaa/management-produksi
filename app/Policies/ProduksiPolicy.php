@@ -48,8 +48,7 @@ class ProduksiPolicy
         }
 
         if ($user->isOperator()) {
-            return $user->id === $produksi->operator_id && 
-                   in_array($produksi->status, [StatusProduksi::DRAFT, StatusProduksi::REJECTED, StatusProduksi::REVISED]);
+            return $user->id === $produksi->operator_id;
         }
 
         return false;
@@ -65,7 +64,7 @@ class ProduksiPolicy
         }
 
         if ($user->isOperator()) {
-            return $user->id === $produksi->operator_id && $produksi->status === StatusProduksi::DRAFT;
+            return $user->id === $produksi->operator_id;
         }
 
         return false;

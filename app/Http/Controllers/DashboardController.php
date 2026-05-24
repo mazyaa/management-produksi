@@ -24,7 +24,7 @@ class DashboardController extends Controller
         $queryAll = Produksi::query();
 
         // Scope data for operator
-        if ($user->isOperator()) {
+        if ($user->role === Role::OPERATOR) {
             $queryToday->where('operator_id', $user->id);
             $queryAll->where('operator_id', $user->id);
         }
@@ -75,7 +75,7 @@ class DashboardController extends Controller
             ->join('kategori_ngs', 'detail_ng_produksis.kategori_ng_id', '=', 'kategori_ngs.id')
             ->whereDate('produksis.tanggal_produksi', $today);
 
-        if ($user->isOperator()) {
+        if ($user->role === Role::OPERATOR) {
             $ngByCategories->where('produksis.operator_id', $user->id);
         }
 

@@ -13,6 +13,8 @@ use App\Enums\Role;
 use App\Enums\StatusProduksi;
 use App\Http\Requests\StoreProduksiRequest;
 use App\Http\Requests\UpdateProduksiRequest;
+use App\Http\Requests\RejectProduksiRequest;
+use App\Http\Requests\SubmitProduksiRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -25,9 +27,9 @@ class ProduksiController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
-        
+
         // Base query with eager loading to prevent N+1 queries
-        $query = Produksi::with(['shift', 'mesin', 'part', 'operator', 'latestVerifikasi']);
+        $query = Produksi::with(['shift', 'mesin', 'part', 'operator', 'latestVerifikasi', 'detailNgProduksis.kategoriNg', 'verifikasiProduksis.verifier']);
 
         // Scope to operator's own records if role is operator
         if ($user->isOperator()) {
@@ -59,16 +61,19 @@ class ProduksiController extends Controller
             });
         }
 
+        $limit = $request->get('limit', 10);
         $produksis = $query->latest('tanggal_produksi')
             ->latest('created_at')
-            ->paginate(10)
+            ->paginate($limit)
             ->withQueryString();
 
         $shifts = Shift::all();
-        $mesins = Mesin::all();
+        $mesins = Mesin::active()->get();
+        $parts = Part::all();
+        $kategoriNgs = KategoriNg::all();
         $statuses = StatusProduksi::cases();
 
-        return view('produksis.index', compact('produksis', 'shifts', 'mesins', 'statuses'));
+        return view('produksis.index', compact('produksis', 'shifts', 'mesins', 'parts', 'kategoriNgs', 'statuses'));
     }
 
     /**
@@ -155,19 +160,6 @@ class ProduksiController extends Controller
                 'icon' => 'error'
             ]);
         }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Produksi $produksi)
-    {
-        $this->authorize('view', $produksi);
-
-        // Load relationships with eager loading
-        $produksi->load(['shift', 'mesin', 'part', 'operator', 'detailNgProduksis.kategoriNg', 'verifikasiProduksis.verifier']);
-
-        return view('produksis.show', compact('produksi'));
     }
 
     /**
@@ -287,7 +279,7 @@ class ProduksiController extends Controller
     /**
      * Submit a draft/revised produksi record.
      */
-    public function submit(Request $request, Produksi $produksi)
+    public function submit(SubmitProduksiRequest $request, Produksi $produksi)
     {
         $this->authorize('submit', $produksi);
 
@@ -321,7 +313,7 @@ class ProduksiController extends Controller
 
             DB::commit();
 
-            return redirect()->route('produksis.show', $produksi->id)->with('swal_msg', [
+            return redirect()->route('produksis.index')->with('swal_msg', [
                 'title' => 'Berhasil!',
                 'text' => 'Data produksi berhasil diverifikasi.',
                 'icon' => 'success'
@@ -339,16 +331,9 @@ class ProduksiController extends Controller
     /**
      * Reject a submitted produksi record.
      */
-    public function reject(Request $request, Produksi $produksi)
+    public function reject(RejectProduksiRequest $request, Produksi $produksi)
     {
         $this->authorize('reject', $produksi);
-
-        $request->validate([
-            'catatan_reject' => ['required', 'string', 'min:5'],
-        ], [
-            'catatan_reject.required' => 'Catatan revisi/rejection wajib diisi.',
-            'catatan_reject.min' => 'Catatan revisi minimal 5 karakter.',
-        ]);
 
         DB::beginTransaction();
         try {
@@ -364,7 +349,7 @@ class ProduksiController extends Controller
 
             DB::commit();
 
-            return redirect()->route('produksis.show', $produksi->id)->with('swal_msg', [
+            return redirect()->route('produksis.index')->with('swal_msg', [
                 'title' => 'Rejection Berhasil!',
                 'text' => 'Data produksi ditolak dengan catatan revisi.',
                 'icon' => 'warning'

@@ -25,7 +25,8 @@ class PartController extends Controller
             });
         }
 
-        $parts = $query->orderBy('nomor_part')->paginate(10)->withQueryString();
+        $limit = $request->get('limit', 10);
+        $parts = $query->orderBy('nomor_part')->paginate($limit)->withQueryString();
         return view('parts.index', compact('parts'));
     }
 

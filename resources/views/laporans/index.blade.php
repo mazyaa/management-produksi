@@ -16,7 +16,7 @@
 
     <!-- Filter Section -->
     <x-filter-section>
-        <form method="GET" action="{{ route('laporans.index') }}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
+        <form method="GET" action="{{ route('laporans.index') }}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-4 items-end">
             <x-form-input
                 label="Tanggal Mulai"
                 name="start_date"
@@ -43,6 +43,13 @@
                     </option>
                 @endforeach
             </x-form-select>
+            <x-form-select label="Part" name="part_id" placeholder="Semua Part">
+                @foreach($parts as $part)
+                    <option value="{{ $part->id }}" {{ request('part_id') == $part->id ? 'selected' : '' }}>
+                        {{ $part->nomor_part }} - {{ $part->nama_part }}
+                    </option>
+                @endforeach
+            </x-form-select>
             <x-form-select label="Status" name="status" placeholder="Semua (excl. Draft)">
                 @foreach($statuses as $status)
                     <option value="{{ $status->value }}" {{ request('status') === $status->value ? 'selected' : '' }}>
@@ -50,7 +57,7 @@
                     </option>
                 @endforeach
             </x-form-select>
-            <div class="flex gap-2">
+            <div class="flex gap-2 md:col-span-2 lg:col-span-1">
                 <button type="submit" class="flex-1 btn-primary py-2.5">Terapkan</button>
                 <a href="{{ route('laporans.index') }}" class="btn-secondary py-2.5 inline-flex justify-center items-center">Reset</a>
             </div>
@@ -59,12 +66,12 @@
 
     <!-- Summary Stats -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <x-stat-card
-            title="Total Records"
-            value="{{ number_format($produksis->count()) }}"
-            color="primary"
-            subtitle="{{ $startDate->format('d M') }} – {{ $endDate->format('d M Y') }}"
-        >
+            <x-stat-card
+                title="Total Records"
+                value="{{ number_format($totalRecords) }}"
+                color="primary"
+                subtitle="{{ $startDate->format('d M') }} – {{ $endDate->format('d M Y') }}"
+            >
             <x-slot name="icon">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -152,7 +159,7 @@
                         </td>
                         <td class="px-4 py-3 text-right">
                             @php $rate = $produksi->achievement_rate; @endphp
-                            <span class="text-xs font-bold {{ $rate >= 100 ? 'text-emerald-600' : ($rate >= 80 ? 'text-amber-600' : 'text-red-500') }}">
+                            <span class="text-xs font-bold {{ $rate >= 100 ? 'text-emerald-600' : ($rate >= 80 ? 'text-secondary-600' : 'text-red-500') }}">
                                 {{ $rate }}%
                             </span>
                         </td>
@@ -166,11 +173,38 @@
             <!-- Footer Totals -->
             <div class="px-6 py-4 border-t border-slate-200 bg-slate-50/50">
                 <div class="flex flex-wrap items-center gap-6 text-xs font-bold text-slate-600">
-                    <span>Total: <span class="text-slate-800">{{ $produksis->count() }} records</span></span>
+                    <span>Total: <span class="text-slate-800">{{ $totalRecords }} records</span></span>
                     <span>Target: <span class="text-slate-800">{{ number_format($totalTarget) }} pcs</span></span>
                     <span>Good: <span class="text-emerald-600">{{ number_format($totalGood) }} pcs</span></span>
                     <span>NG: <span class="text-red-500">{{ number_format($totalNg) }} pcs</span></span>
                     <span>Achievement: <span class="text-primary-600">{{ $totalTarget > 0 ? round(($totalGood / $totalTarget) * 100, 1) : 0 }}%</span></span>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between px-6 py-4 border-t border-slate-100 bg-slate-50/20">
+                <div class="flex items-center gap-2 text-sm">
+                    <form method="GET" action="{{ route('laporans.index') }}">
+                        @foreach(request()->except('limit', 'page') as $key => $value)
+                            @if(is_array($value))
+                                @foreach($value as $k => $v)
+                                    <input type="hidden" name="{{ $key }}[{{ $k }}]" value="{{ $v }}">
+                                @endforeach
+                            @else
+                                <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                            @endif
+                        @endforeach
+                        <label class="font-medium text-slate-600">Tampilkan</label>
+                        <select name="limit" onchange="this.form.submit()" class="text-xs rounded-lg border-slate-300 text-slate-700 font-semibold py-1.5 px-2 focus:ring-primary-500 focus:border-primary-500">
+                            <option value="10" {{ request('limit') == 10 ? 'selected' : '' }}>10</option>
+                            <option value="25" {{ request('limit') == 25 ? 'selected' : '' }}>25</option>
+                            <option value="50" {{ request('limit') == 50 ? 'selected' : '' }}>50</option>
+                            <option value="100" {{ request('limit') == 100 ? 'selected' : '' }}>100</option>
+                        </select>
+                        <span class="text-slate-500">data</span>
+                    </form>
+                </div>
+                <div>
+                    {{ $produksis->links() }}
                 </div>
             </div>
         @else

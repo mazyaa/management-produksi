@@ -28,10 +28,18 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Produksi Harian (all authenticated users can access index/show; create/edit/delete scoped by policy)
-    Route::resource('produksis', ProduksiController::class);
+    Route::resource('produksis', ProduksiController::class)->except(['create', 'edit', 'show']);
+
+    // Submit (admin & operator — scoped by policy)
     Route::patch('/produksis/{produksi}/submit', [ProduksiController::class, 'submit'])->name('produksis.submit');
-    Route::patch('/produksis/{produksi}/verify', [ProduksiController::class, 'verify'])->name('produksis.verify');
-    Route::patch('/produksis/{produksi}/reject', [ProduksiController::class, 'reject'])->name('produksis.reject');
+
+    // Verify & Reject (admin & leader only)
+    Route::patch('/produksis/{produksi}/verify', [ProduksiController::class, 'verify'])
+        ->middleware('role:admin,leader')
+        ->name('produksis.verify');
+    Route::patch('/produksis/{produksi}/reject', [ProduksiController::class, 'reject'])
+        ->middleware('role:admin,leader')
+        ->name('produksis.reject');
 
     // Laporan (leader, assistant_manager, admin)
     Route::get('/laporans', [LaporanController::class, 'index'])
@@ -39,15 +47,17 @@ Route::middleware('auth')->group(function () {
         ->name('laporans.index');
 
     // User Management (admin only)
-    Route::resource('users', UserController::class);
-    Route::patch('/users/{user}/toggle-active', [UserController::class, 'toggleActive'])->name('users.toggle-active');
+    Route::middleware('role:admin')->group(function () {
+        Route::resource('users', UserController::class)->except(['create', 'edit', 'show']);
+        Route::patch('/users/{user}/toggle-active', [UserController::class, 'toggleActive'])->name('users.toggle-active');
+    });
 
     // Master Data (admin only)
     Route::prefix('master')->name('master.')->middleware('role:admin')->group(function () {
-        Route::resource('shifts', ShiftController::class);
-        Route::resource('mesins', MesinController::class);
-        Route::resource('parts', PartController::class);
-        Route::resource('kategori-ngs', KategoriNgController::class);
+        Route::resource('shifts', ShiftController::class)->except(['create', 'edit', 'show']);
+        Route::resource('mesins', MesinController::class)->except(['create', 'edit', 'show']);
+        Route::resource('parts', PartController::class)->except(['create', 'edit', 'show']);
+        Route::resource('kategori-ngs', KategoriNgController::class)->except(['create', 'edit', 'show']);
     });
 });
 

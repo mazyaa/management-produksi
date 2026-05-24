@@ -3,28 +3,13 @@
     @section('page-title', 'Dashboard Monitoring Produksi')
 
     <!-- Dashboard stats cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <!-- Total Target -->
-        <x-stat-card 
-            title="Target Produksi Hari Ini" 
-            value="{{ number_format($totalTargetToday) }} pcs" 
-            color="primary"
-            subtitle="Target harian terkumpul"
-        >
-            <x-slot name="icon">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-            </x-slot>
-        </x-stat-card>
-
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 items-center justify-center">
         <!-- Good Qty -->
-        <x-stat-card 
-            title="Produk OK Hari Ini" 
-            value="{{ number_format($totalGoodToday) }} pcs" 
+        <x-stat-card
+            title="Produk OK Hari Ini"
+            value="{{ number_format($totalGoodToday) }} pcs"
             color="success"
-            trend="{{ $totalTargetToday > 0 ? round(($totalGoodToday / $totalTargetToday) * 100, 1) . '%' : '0%' }}"
-            subtitle="Achievement rate"
+            subtitle="Produk harian terkumpul"
         >
             <x-slot name="icon">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -34,13 +19,11 @@
         </x-stat-card>
 
         <!-- NG Qty -->
-        <x-stat-card 
-            title="Produk NG Hari Ini" 
-            value="{{ number_format($totalNgToday) }} pcs" 
+        <x-stat-card
+            title="Produk NG Hari Ini"
+            value="{{ number_format($totalNgToday) }} pcs"
             color="danger"
-            trend="{{ $totalGoodToday + $totalNgToday > 0 ? round(($totalNgToday / ($totalGoodToday + $totalNgToday)) * 100, 1) . '%' : '0%' }}"
-            :trendUp="false"
-            subtitle="Defect rate harian"
+            subtitle="Produk cacat (NG) terkumpul"
         >
             <x-slot name="icon">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -49,16 +32,30 @@
             </x-slot>
         </x-stat-card>
 
-        <!-- Verification Stat -->
-        <x-stat-card 
-            title="Status Verifikasi" 
-            value="{{ $todayVerified }} / {{ $todayVerified + $todaySubmitted + $todayRejected + $todayDraft }}" 
+        <!-- Submitted (pending verification) -->
+        <x-stat-card
+            title="Menunggu Verifikasi"
+            value="{{ $todaySubmitted }}"
             color="warning"
-            subtitle="Verified vs total hari ini"
+            subtitle="{{ $todaySubmitted > 0 ? 'Segera diverifikasi Leader' : 'Tidak ada antrian' }}"
         >
             <x-slot name="icon">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </x-slot>
+        </x-stat-card>
+
+        <!-- Verified Today -->
+        <x-stat-card
+            title="Terverifikasi"
+            value="{{ $todayVerified }}"
+            color="success"
+            subtitle="{{ $todayVerified > 0 ? 'Data sudah diverifikasi' : 'Belum ada verifikasi' }}"
+        >
+            <x-slot name="icon">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
             </x-slot>
         </x-stat-card>
@@ -83,23 +80,32 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- NG by Categories chart -->
-        <div class="lg:col-span-1">
+        <div class="lg:col-span-2">
             <x-card title="Kategori Non-Good (NG)">
                 @if(count($ngCategoryLabels) > 0)
                     <div class="h-64 relative flex items-center justify-center">
                         <canvas id="ngChart"></canvas>
                     </div>
                 @else
-                    <x-empty-state 
-                        title="Tidak Ada Data NG" 
+                    <x-empty-state
+                        title="Tidak Ada Data NG"
                         message="Selamat! Tidak ada produk cacat (NG) yang tercatat hari ini."
                     />
                 @endif
             </x-card>
         </div>
 
+        <!-- Verification Distribution -->
+        <div class="lg:col-span-1">
+            <x-card title="Distribusi Status (Hari Ini)">
+                <div class="h-64 relative flex items-center justify-center">
+                    <canvas id="verificationChart"></canvas>
+                </div>
+            </x-card>
+        </div>
+
         <!-- Recent Activities -->
-        <div class="lg:col-span-2">
+        <div class="lg:col-span-3">
             <x-card title="Aktivitas Produksi Terakhir">
                 @if($recentActivities->count() > 0)
                     <div class="divide-y divide-slate-100 overflow-hidden">
@@ -129,8 +135,8 @@
                                         @endif
                                     </div>
                                     <x-badge :type="$activity->status->value" />
-                                    
-                                    <a href="{{ route('produksis.show', $activity->id) }}" class="text-slate-400 hover:text-primary-600 transition-colors p-1.5 rounded-lg border border-transparent hover:border-slate-200/50 hover:bg-white hover:shadow-sm">
+
+                                    <a href="{{ route('produksis.index') }}" class="text-slate-400 hover:text-primary-600 transition-colors p-1.5 rounded-lg border border-transparent hover:border-slate-200/50 hover:bg-white hover:shadow-sm">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 5l7 7-7 7" />
                                         </svg>
@@ -140,8 +146,8 @@
                         @endforeach
                     </div>
                 @else
-                    <x-empty-state 
-                        title="Belum Ada Aktivitas" 
+                    <x-empty-state
+                        title="Belum Ada Aktivitas"
                         message="Belum ada data pencatatan produksi yang dimasukkan."
                     />
                 @endif
@@ -234,7 +240,38 @@
                 }
             });
 
-            // 3. NG Chart (Doughnut Chart)
+            // 3. Verification Status Chart (Doughnut Chart)
+            const ctxVerif = document.getElementById('verificationChart');
+            if (ctxVerif) {
+                new Chart(ctxVerif.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Verified', 'Submitted', 'Rejected', 'Draft'],
+                        datasets: [{
+                            data: [{{ $todayVerified }}, {{ $todaySubmitted }}, {{ $todayRejected }}, {{ $todayDraft }}],
+                            backgroundColor: ['#10b981', '#3b82f6', '#ef4444', '#94a3b8'],
+                            borderWidth: 2,
+                            borderColor: '#ffffff',
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '65%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    boxWidth: 12,
+                                    font: { family: 'Inter', weight: '600', size: 10 }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 4. NG Chart (Doughnut Chart)
             const ctxNg = document.getElementById('ngChart');
             if (ctxNg) {
                 new Chart(ctxNg.getContext('2d'), {

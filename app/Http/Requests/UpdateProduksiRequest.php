@@ -30,6 +30,25 @@ class UpdateProduksiRequest extends FormRequest
         ];
     }
 
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $goodQty = (int) $this->input('good_qty');
+            $targetQty = (int) $this->input('target_qty');
+            $totalNg = 0;
+
+            if ($this->has('ng') && is_array($this->input('ng'))) {
+                foreach ($this->input('ng') as $ngItem) {
+                    $totalNg += (int) ($ngItem['qty'] ?? 0);
+                }
+            }
+
+            if (($goodQty + $totalNg) > $targetQty) {
+                $validator->errors()->add('good_qty', 'Total good (' . $goodQty . ') + NG (' . $totalNg . ') tidak boleh melebihi target (' . $targetQty . ').');
+            }
+        });
+    }
+
     public function messages(): array
     {
         return [

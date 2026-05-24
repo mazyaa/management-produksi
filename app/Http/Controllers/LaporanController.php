@@ -45,29 +45,32 @@ class LaporanController extends Controller
             $query->where('status', '!=', StatusProduksi::DRAFT);
         }
 
-        // Clone query for totals
+        // Clone query for totals (before pagination)
+        $totalRecords = (clone $query)->count();
         $totalTarget = (clone $query)->sum('target_qty');
         $totalGood = (clone $query)->sum('good_qty');
         $totalNg = (clone $query)->sum('total_ng_qty');
-
-        // Execute query
-        $produksis = $query->orderBy('tanggal_produksi', 'desc')->get();
 
         $shifts = Shift::all();
         $mesins = Mesin::all();
         $parts = Part::all();
         $statuses = StatusProduksi::cases();
 
-        // Print mode check
+        // Print mode: get all records, no pagination
         if ($request->input('print') === 'true') {
+            $allRecords = (clone $query)->orderBy('tanggal_produksi', 'desc')->get();
             return view('laporans.print', compact(
-                'produksis', 'totalTarget', 'totalGood', 'totalNg', 
+                'allRecords', 'totalTarget', 'totalGood', 'totalNg', 'totalRecords',
                 'startDate', 'endDate', 'shifts', 'mesins', 'parts'
             ));
         }
 
+        // Execute query with pagination
+        $limit = $request->get('limit', 20);
+        $produksis = $query->orderBy('tanggal_produksi', 'desc')->paginate($limit)->withQueryString();
+
         return view('laporans.index', compact(
-            'produksis', 'totalTarget', 'totalGood', 'totalNg',
+            'produksis', 'totalTarget', 'totalGood', 'totalNg', 'totalRecords',
             'startDate', 'endDate', 'shifts', 'mesins', 'parts', 'statuses'
         ));
     }

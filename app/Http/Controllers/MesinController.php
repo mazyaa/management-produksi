@@ -29,7 +29,8 @@ class MesinController extends Controller
             $query->where('is_active', $request->status === 'active');
         }
 
-        $mesins = $query->orderBy('kode_mesin')->paginate(10)->withQueryString();
+        $limit = $request->get('limit', 10);
+        $mesins = $query->orderBy('kode_mesin')->paginate($limit)->withQueryString();
         return view('mesins.index', compact('mesins'));
     }
 

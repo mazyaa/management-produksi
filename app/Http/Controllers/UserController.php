@@ -11,11 +11,6 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(User::class, 'user');
-    }
-
     /**
      * Display a listing of the resource.
      */
@@ -43,7 +38,8 @@ class UserController extends Controller
             $query->where('is_active', $request->status === 'active');
         }
 
-        $users = $query->orderBy('nama')->paginate(10)->withQueryString();
+        $limit = $request->get('limit', 10);
+        $users = $query->orderBy('nama')->paginate($limit)->withQueryString();
         $roles = Role::cases();
 
         return view('users.index', compact('users', 'roles'));

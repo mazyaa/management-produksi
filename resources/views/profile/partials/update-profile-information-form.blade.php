@@ -18,15 +18,15 @@
         @method('patch')
 
         <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
-            <x-input-error class="mt-2" :messages="$errors->get('name')" />
+            <label for="nama" class="form-label font-bold text-slate-700">Nama Lengkap</label>
+            <input id="nama" name="nama" type="text" class="form-input-custom border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 mt-1 block w-full" value="{{ old('nama', $user->nama) }}" required autofocus autocomplete="nama" />
+            @error('nama') <span class="text-xs text-red-650 font-bold block mt-1.5">{{ $message }}</span> @enderror
         </div>
 
         <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
-            <x-input-error class="mt-2" :messages="$errors->get('email')" />
+            <label for="email" class="form-label font-bold text-slate-700">Email</label>
+            <input id="email" name="email" type="email" class="form-input-custom border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 mt-1 block w-full" value="{{ old('email', $user->email) }}" required autocomplete="username" />
+            @error('email') <span class="text-xs text-red-650 font-bold block mt-1.5">{{ $message }}</span> @enderror
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
                 <div>
@@ -48,7 +48,7 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+            <button type="submit" class="btn-primary">{{ __('Simpan') }}</button>
 
             @if (session('status') === 'profile-updated')
                 <p

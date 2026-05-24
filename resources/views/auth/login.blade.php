@@ -2,9 +2,7 @@
     <div class="bg-white/80 backdrop-blur-md rounded-3xl border border-white/20 shadow-2xl p-8 transition-all duration-300 hover:shadow-primary-500/5">
         <!-- Brand Header -->
         <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-primary-600 to-indigo-500 text-white font-extrabold text-xl shadow-lg shadow-primary-500/20 mb-4 tracking-wider">
-                MI
-            </div>
+            <img src="{{ asset('img/logomitsuba.svg') }}" alt="Logo Mitsuba" class="w-16 h-16 mx-auto mb-4 object-contain drop-shadow-md" />
             <h2 class="text-xl font-bold text-slate-800 tracking-tight">PT Mitsuba Indonesia</h2>
             <p class="text-xs font-semibold text-primary-600 uppercase tracking-widest mt-1">Press-3 Department</p>
             <h1 class="text-sm text-slate-500 mt-2 font-medium">Sistem Informasi Produksi Harian</h1>
