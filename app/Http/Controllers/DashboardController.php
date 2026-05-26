@@ -15,7 +15,7 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        $user = auth()->user();
+        $user = $request->user();
         $today = Carbon::today();
 
         // Base query for today
@@ -69,7 +69,36 @@ class DashboardController extends Controller
             $mesinGoodData[] = (clone $queryToday)->where('mesin_id', $mesin->id)->sum('good_qty');
         }
 
-        // 6. NG by Category (Overall today)
+        // 6. Target vs Actual Trend (Last 7 days)
+        $trendQuery = Produksi::select(
+            DB::raw('DATE(tanggal_produksi) as date'),
+            DB::raw('SUM(target_qty) as total_target'),
+            DB::raw('SUM(good_qty) as total_actual')
+        )
+        ->where('tanggal_produksi', '>=', now()->subDays(6)->startOfDay());
+
+        if ($user->role === Role::OPERATOR) {
+            $trendQuery->where('operator_id', $user->id);
+        }
+
+        $targetTrend = $trendQuery
+            ->groupBy(DB::raw('DATE(tanggal_produksi)'))
+            ->orderBy('date')
+            ->get()
+            ->keyBy('date');
+
+        $trendLabels = collect();
+        $trendTarget = collect();
+        $trendActual = collect();
+
+        for ($i = 6; $i >= 0; $i--) {
+            $date = now()->subDays($i)->format('Y-m-d');
+            $trendLabels->push(now()->subDays($i)->locale('id')->isoFormat('ddd, D MMM'));
+            $trendTarget->push((int) ($targetTrend[$date]->total_target ?? 0));
+            $trendActual->push((int) ($targetTrend[$date]->total_actual ?? 0));
+        }
+
+        // 7. NG by Category (Overall today)
         $ngByCategories = DB::table('detail_ng_produksis')
             ->join('produksis', 'detail_ng_produksis.produksi_id', '=', 'produksis.id')
             ->join('kategori_ngs', 'detail_ng_produksis.kategori_ng_id', '=', 'kategori_ngs.id')
@@ -103,7 +132,10 @@ class DashboardController extends Controller
             'mesinLabels',
             'mesinGoodData',
             'ngCategoryLabels',
-            'ngCategoryData'
+            'ngCategoryData',
+            'trendLabels',
+            'trendTarget',
+            'trendActual'
         ));
     }
 }

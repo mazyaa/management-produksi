@@ -67,35 +67,31 @@ class DatabaseSeeder extends Seeder
         // 2. Seed Shifts
         $shift1 = Shift::create([
             'nama_shift' => 'Shift 1',
-            'jam_masuk' => '06:00:00',
-            'jam_selesai' => '14:00:00',
+            'jam_masuk' => '07:55:00',
+            'jam_selesai' => '17:00:00',
         ]);
         $shift2 = Shift::create([
             'nama_shift' => 'Shift 2',
-            'jam_masuk' => '14:00:00',
-            'jam_selesai' => '22:00:00',
+            'jam_masuk' => '16:55:00',
+            'jam_selesai' => '01:00:00',
         ]);
         $shift3 = Shift::create([
             'nama_shift' => 'Shift 3',
-            'jam_masuk' => '22:00:00',
-            'jam_selesai' => '06:00:00',
+            'jam_masuk' => '00:55:00',
+            'jam_selesai' => '08:00:00',
         ]);
 
         // 3. Seed Mesins
         $mesins = [];
-        $mesins[] = Mesin::create(['kode_mesin' => 'PR3-001', 'nama_mesin' => 'Press Machine 60T A', 'line' => 'Line 3A', 'is_active' => true]);
-        $mesins[] = Mesin::create(['kode_mesin' => 'PR3-002', 'nama_mesin' => 'Press Machine 80T B', 'line' => 'Line 3A', 'is_active' => true]);
-        $mesins[] = Mesin::create(['kode_mesin' => 'PR3-003', 'nama_mesin' => 'Press Machine 110T C', 'line' => 'Line 3B', 'is_active' => true]);
-        $mesins[] = Mesin::create(['kode_mesin' => 'PR3-004', 'nama_mesin' => 'Press Machine 150T D', 'line' => 'Line 3B', 'is_active' => true]);
-        $mesins[] = Mesin::create(['kode_mesin' => 'PR3-005', 'nama_mesin' => 'Press Machine 200T E', 'line' => 'Line 3C', 'is_active' => false]); // inactive for testing
+        $mesins[] = Mesin::create(['kode_mesin' => 'PR3-001', 'nama_mesin' => 'PR3-M-Rotor', 'line' => '1', 'is_active' => true]);
+        $mesins[] = Mesin::create(['kode_mesin' => 'PR3-002', 'nama_mesin' => 'PR3-M-300T', 'line' => '1', 'is_active' => true]);
+        $mesins[] = Mesin::create(['kode_mesin' => 'PR3-003', 'nama_mesin' => 'PR3-M-330T', 'line' => '1', 'is_active' => true]);
 
         // 4. Seed Parts
         $parts = [];
-        $parts[] = Part::create(['nomor_part' => 'MIT-P3-1001', 'nama_part' => 'Arm Bracket Comp', 'kategori' => 'Press Parts']);
-        $parts[] = Part::create(['nomor_part' => 'MIT-P3-1002', 'nama_part' => 'Plate Lock Starter', 'kategori' => 'Starter Parts']);
-        $parts[] = Part::create(['nomor_part' => 'MIT-P3-1003', 'nama_part' => 'Lever Washer Plate', 'kategori' => 'Wiper Parts']);
-        $parts[] = Part::create(['nomor_part' => 'MIT-P3-1004', 'nama_part' => 'Flange Yoke Starter', 'kategori' => 'Starter Parts']);
-        $parts[] = Part::create(['nomor_part' => 'MIT-P3-1005', 'nama_part' => 'Base Plate Wiper Motor', 'kategori' => 'Wiper Parts']);
+        $parts[] = Part::create(['nomor_part' => 'MIT-P3-1001', 'nama_part' => 'Rotor Kashime', 'kategori' => 'Press Parts']);
+        $parts[] = Part::create(['nomor_part' => 'MIT-P3-1002', 'nama_part' => 'Cover Magnet', 'kategori' => 'Press Parts']);
+        $parts[] = Part::create(['nomor_part' => 'MIT-P3-1003', 'nama_part' => 'Core Unit', 'kategori' => 'Stator Parts']);
 
         // 5. Seed Kategori NG
         $ngs = [];
@@ -167,8 +163,8 @@ class DatabaseSeeder extends Seeder
         $p4 = Produksi::create([
             'tanggal_produksi' => $yesterday,
             'shift_id' => $shift1->id,
-            'mesin_id' => $mesins[3]->id,
-            'part_id' => $parts[3]->id,
+            'mesin_id' => $mesins[2]->id,
+            'part_id' => $parts[2]->id,
             'operator_id' => $operators[2]->id,
             'target_qty' => 800,
             'good_qty' => 700,
@@ -177,7 +173,7 @@ class DatabaseSeeder extends Seeder
             'catatan' => 'Ada kendala setting cetakan/die.',
         ]);
         DetailNgProduksi::create(['produksi_id' => $p4->id, 'kategori_ng_id' => $ngs[1]->id, 'qty' => 50, 'catatan' => 'Die crack membuat retakan panjang']);
-        DetailNgProduksi::create(['produksi_id' => $p4->id, 'kategori_ng_id' => $ngs[4]->id, 'qty' => 30, 'catatan' => 'Ukuran melebar out of specification']);
+        DetailNgProduksi::create(['produksi_id' => $p4->id, 'kategori_ng_id' => $ngs[2]->id, 'qty' => 30, 'catatan' => 'Ukuran melebar out of specification']);
         VerifikasiProduksi::create([
             'produksi_id' => $p4->id,
             'verified_by' => $leader->id,
@@ -214,7 +210,7 @@ class DatabaseSeeder extends Seeder
             'status' => StatusProduksi::VERIFIED,
             'catatan' => 'Lancar, hasil bagus.',
         ]);
-        DetailNgProduksi::create(['produksi_id' => $p6->id, 'kategori_ng_id' => $ngs[3]->id, 'qty' => 2]);
+        DetailNgProduksi::create(['produksi_id' => $p6->id, 'kategori_ng_id' => $ngs[2]->id, 'qty' => 2]);
         VerifikasiProduksi::create([
             'produksi_id' => $p6->id,
             'verified_by' => $leader->id,
@@ -228,7 +224,7 @@ class DatabaseSeeder extends Seeder
             'tanggal_produksi' => $today,
             'shift_id' => $shift2->id,
             'mesin_id' => $mesins[2]->id,
-            'part_id' => $parts[3]->id,
+            'part_id' => $parts[2]->id,
             'operator_id' => $operators[1]->id,
             'target_qty' => 700,
             'good_qty' => 600,

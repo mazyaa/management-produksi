@@ -78,6 +78,15 @@
         </x-card>
     </div>
 
+    <!-- Target vs Actual Trend Chart -->
+    <div class="mb-8">
+        <x-card title="Tren Target vs Realisasi Produksi (7 Hari Terakhir)">
+            <div class="h-72 relative">
+                <canvas id="targetChart"></canvas>
+            </div>
+        </x-card>
+    </div>
+
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- NG by Categories chart -->
         <div class="lg:col-span-2">
@@ -303,6 +312,67 @@
                     }
                 });
             }
+
+            // 5. Target vs Actual Trend Chart (Bar Chart)
+            const ctxTarget = document.getElementById('targetChart').getContext('2d');
+            new Chart(ctxTarget, {
+                type: 'bar',
+                data: {
+                    labels: @json($trendLabels),
+                    datasets: [
+                        {
+                            label: 'Target',
+                            data: @json($trendTarget),
+                            backgroundColor: '#f97316',
+                            borderRadius: 6,
+                            barPercentage: 0.8,
+                        },
+                        {
+                            label: 'Realisasi (Good Qty)',
+                            data: @json($trendActual),
+                            backgroundColor: '#3b82f6',
+                            borderRadius: 6,
+                            barPercentage: 0.8,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: { family: 'Inter', weight: '600', size: 11 },
+                                padding: 16,
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + Number(context.raw).toLocaleString() + ' pcs';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#f1f5f9' },
+                            ticks: {
+                                font: { family: 'Inter', size: 10 },
+                                callback: function(value) {
+                                    return Number(value).toLocaleString();
+                                }
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { family: 'Inter', size: 10, weight: '600' } }
+                        }
+                    }
+                }
+            });
         });
     </script>
     @endpush

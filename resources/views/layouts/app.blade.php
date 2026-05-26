@@ -41,7 +41,7 @@
                     <div class="flex items-center gap-3">
                         <img src="{{ asset('img/logomitsuba.svg') }}" alt="Logo Mitsuba" class="w-9 h-9 object-contain" />
                         <div class="transition-all duration-300 whitespace-nowrap" x-show="!sidebarCollapsed">
-                            <span class="text-white font-bold text-base tracking-tight">PT Mitsuba</span>
+                            <span class="text-white font-bold text-base tracking-tight">PT Mitsuba Indonesia</span>
                             <span class="block text-[10px] font-semibold text-primary-500 uppercase tracking-wider">Press-3 Dept</span>
                         </div>
                     </div>
